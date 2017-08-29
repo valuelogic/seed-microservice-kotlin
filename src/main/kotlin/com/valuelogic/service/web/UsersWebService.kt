@@ -19,6 +19,7 @@ class UsersWebService {
 
     @PostMapping
     fun createUser(): UserInfo? {
+        //TODO add your logic here and additional services if needed
         val u = UserInfo(firstName = "mike", lastName = "wrona", eMail = UUID.randomUUID().toString())
         return repoFactory.transactional { r ->
             r.save(u).get()
@@ -27,6 +28,7 @@ class UsersWebService {
                 .get()
     }
 
+    //TODO add your logic here and additional services if needed
     @GetMapping
     fun getUsers(
             @RequestParam(required = false, defaultValue = "0") offset: Long = 0,
