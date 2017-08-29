@@ -33,7 +33,6 @@ class UsersWebService {
     fun getUsers(
             @RequestParam(required = false, defaultValue = "0") offset: Long = 0,
             @RequestParam(required = false, defaultValue = "50") limit: Long = 50
-
     ): List<UserInfo> = repoFactory.repository().query { q ->
         q.select(QUserInfo.userInfo)
                 .from(QUserInfo.userInfo)

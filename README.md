@@ -4,7 +4,7 @@ Seed of micro-service for rapid development.
 
 Scope:
 
-    * Spring with Kotlin with FP 
+    * Spring with Kotlin & FP 
     
     * No seprate Spring JPA repository per type of entity (single repository for all entities)
     
@@ -69,6 +69,46 @@ kubectl run -it --rm cockroach-client --image=cockroachdb/cockroach --restart=Ne
 ```
 
 and then open `http://localhost:8081` in your browser
+
+
+##### Accessing data
+
+Instead of using Spring JPA repositories, that require a lot of inheritance and creating repository for each entity, use RepositoryFactory instead. 
+
+RepositoryFactory provides single repository for all entities with generic access methods. 
+
+1) Data modifications with transactions
+
+```kotlin
+
+    @Autowired
+    private val repoFactory: RepositoryFactory
+
+    val u = UserInfo(firstName = "mike", lastName = "wrona", eMail = UUID.randomUUID().toString())
+    val created : UserInfo = repoFactory.transactional { r ->
+        r.save(u).get()
+    }
+        .onFailure { ex -> error("Couldn't save user", ex) }
+        .get()
+```
+
+2) Querying data 
+
+```kotlin
+
+    @Autowired
+    private val repoFactory: RepositoryFactory
+
+    val result : List<UserInfo> = repoFactory.repository().query { q ->
+        q.select(QUserInfo.userInfo)
+            .from(QUserInfo.userInfo)
+            .offset(offset)
+            .limit(limit)
+            .fetch()
+    }
+        .onFailure { ex -> error("Couldn't get users", ex) }
+        .getOrElse { listOf() }
+```
 
 ## DevOps
 
