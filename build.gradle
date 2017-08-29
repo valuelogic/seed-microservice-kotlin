@@ -1,0 +1,101 @@
+buildscript {
+
+    repositories {
+        mavenCentral()
+        jcenter()
+        maven {
+            url "https://plugins.gradle.org/m2/"
+        }
+    }
+
+    dependencies {
+        classpath 'org.springframework.boot:spring-boot-gradle-plugin:1.5.6.RELEASE'
+        classpath 'org.jetbrains.kotlin:kotlin-noarg:1.1.4-2'
+        classpath 'org.jetbrains.kotlin:kotlin-allopen:1.1.4-2'
+        classpath 'org.jetbrains.kotlin:kotlin-gradle-plugin:1.1.4-2'
+        classpath 'se.transmode.gradle:gradle-docker:1.2'
+        classpath "gradle.plugin.com.ewerk.gradle.plugins:querydsl-plugin:1.0.9"
+    }
+}
+
+apply {
+    plugin("kotlin")
+    plugin("java")
+    plugin("kotlin-spring")
+    plugin("kotlin-jpa")
+    plugin("org.springframework.boot")
+    plugin("application")
+    plugin("docker")
+    plugin("groovy")
+    plugin("idea")
+}
+
+apply from: 'gradle/querydsl.gradle'
+
+applicationName = "seed-microservice-kotlin"
+version = "0.0.1"
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+    jcenter()
+}
+
+dependencies {
+    //kotlin & FP
+    compile("org.jetbrains.kotlin:kotlin-stdlib")
+    compile("org.jetbrains.kotlin:kotlin-stdlib-jre8")
+    compile("org.jetbrains.kotlin:kotlin-reflect")
+    compile("org.funktionale:funktionale-all:1.1")
+
+    //spring
+    compile("org.springframework.boot:spring-boot-starter-web")
+    compile("org.springframework.boot:spring-boot-starter-logging")
+    compile("com.fasterxml.jackson.module:jackson-module-kotlin:2.9.0")
+    compile("org.springframework.data:spring-data-jpa:1.11.6.RELEASE")
+
+    //DevOps
+    compile("io.fabric8:spring-cloud-starter-kubernetes:0.1.6")
+
+    //data access
+    compile("org.springframework.boot:spring-boot-starter-data-jpa")
+    compile("postgresql:postgresql:9.4.1208-jdbc42-atlassian-hosted")
+    compile("org.hibernate:hibernate-core:5.2.10.Final")
+    compile("org.hibernate:hibernate-entitymanager:5.2.10.Final")
+    compile("org.hibernate.javax.persistence:hibernate-jpa-2.1-api:1.0.0.Final")
+
+    //tests
+    testCompile("org.springframework.boot:spring-boot-starter-test")
+    testCompile("com.h2database:h2:1.4.196")
+    //spock for BDD
+    testCompile 'org.spockframework:spock-core:1.1-groovy-2.4'
+    testCompile 'org.spockframework:spock-spring:1.1-groovy-2.4'
+    testCompile 'org.objenesis:objenesis:2.6'
+    testCompile 'cglib:cglib-nodep:3.2.4'
+    testCompile 'org.codehaus.groovy:groovy-all:2.4.7'
+}
+
+docker {
+    baseImage "openjdk:8-jre-alpine"
+    maintainer 'Michal Wronski "michal.robert.wronski@gmail.com"'
+}
+
+compileKotlin {
+    kotlinOptions {
+        jvmTarget = "$targetCompatibility"
+    }
+}
+
+compileTestKotlin {
+    kotlinOptions {
+        jvmTarget = "$targetCompatibility"
+    }
+}
+
+idea {
+    module {
+        inheritOutputDirs = false
+        outputDir = file("$buildDir/classes/main/")
+    }
+}

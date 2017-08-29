@@ -1,0 +1,23 @@
+apply plugin: "com.ewerk.gradle.plugins.querydsl"
+apply plugin: 'kotlin-kapt'
+apply plugin: 'idea'
+
+querydsl {
+    jpa = true
+    querydslDefault = true
+    querydslSourcesDir = "$buildDir/generated/source/apt/main"
+}
+
+dependencies {
+    compile "com.querydsl:querydsl-jpa:${querydsl_version}"
+    kapt "com.querydsl:querydsl-apt:$querydsl_version:jpa"
+    compileOnly "com.querydsl:querydsl-apt:${querydsl_version}"
+}
+
+idea {
+    module {
+        def kaptMain = file('build/generated/source/kapt/main')
+        sourceDirs += kaptMain
+        generatedSourceDirs += kaptMain
+    }
+}
