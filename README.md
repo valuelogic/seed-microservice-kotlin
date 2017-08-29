@@ -118,6 +118,23 @@ DevOps for following clouds/orchestration solution is prepared:
     
     * AWS - Elastic Beanstalk (`devops/aws`)
 
+##### Logging 
+
+Don't use loggers directly by making them attributes of your class & don't use annotations for generating those attributes automatically.
+
+You can use extension points instead. There are defined in `com.valuelogic.service.monitoring.Tracer`:
+
+```kotlin
+    import com.valuelogic.service.monitoring.error
+    import com.valuelogic.service.monitoring.info
+    import com.valuelogic.service.monitoring.debug
+    
+    //then you can log everything you want
+    error("Some error here")
+    info("Some info message")
+    debug("Some debug message")
+```
+
 ## Peformance tests
 
 Simple performance tests can be done using `vegeta` tool.
